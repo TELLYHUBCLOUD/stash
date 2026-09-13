@@ -137,6 +137,9 @@ func GetNameFromPath(path string, stripExtension bool) string {
 func Touch(path string) error {
 	var _, err = os.Stat(path)
 	if os.IsNotExist(err) {
+		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+			return err
+		}
 		var file, err = os.Create(path)
 		if err != nil {
 			return err

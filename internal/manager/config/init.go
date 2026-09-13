@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/knadh/koanf/providers/env"
@@ -142,6 +143,15 @@ func (i *Config) loadFromEnv() {
 	}), nil); err != nil {
 		logger.Errorf("failed to load envs: %v", err)
 	}
+
+	// Also support PORT environment variable (standard in cloud providers like Render, Railway, Heroku)
+	if !v.Exists(Port) {
+		if portStr := os.Getenv("PORT"); portStr != "" {
+			if portVal, err := strconv.Atoi(portStr); err == nil && portVal > 0 {
+				v.Set(Port, portVal)
+			}
+		}
+	}
 }
 
 func (i *Config) initOverrides() {
@@ -164,6 +174,12 @@ func (i *Config) initConfig() error {
 		if exists, _ := fsutil.FileExists(configFile); !exists {
 			i.isNewSystem = true
 			i.SetConfigFile(configFile)
+
+			// ensure parent directory exists
+			dir := filepath.Dir(configFile)
+			if err := os.MkdirAll(dir, 0755); err != nil {
+				return fmt.Errorf(`could not create config directory "%s": %v`, dir, err)
+			}
 
 			// ensure we can write to the file
 			if err := fsutil.Touch(configFile); err != nil {

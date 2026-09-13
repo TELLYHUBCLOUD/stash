@@ -545,6 +545,10 @@ func (i *Config) Write() error {
 		return err
 	}
 
+	if err := os.MkdirAll(filepath.Dir(i.filePath), 0755); err != nil {
+		return err
+	}
+
 	return os.WriteFile(i.filePath, data, 0640)
 }
 
