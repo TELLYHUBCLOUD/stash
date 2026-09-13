@@ -1259,11 +1259,7 @@ func (i *Config) ValidateStashBoxes(boxes []*StashBoxInput) error {
 	isMulti := len(boxes) > 1
 
 	for _, box := range boxes {
-		// Validate each stash-box configuration field, return on error
-		if box.APIKey == "" {
-			return &StashBoxError{msg: "API Key cannot be blank"}
-		}
-
+		// Validate each stash-box configuration field (API key is optional for public/custom endpoints)
 		if box.Endpoint == "" {
 			return &StashBoxError{msg: "endpoint cannot be blank"}
 		}

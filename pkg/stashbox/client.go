@@ -48,7 +48,9 @@ func MaxRequestsPerMinute(n int) ClientOption {
 
 func setApiKeyHeader(apiKey string) clientv2.RequestInterceptor {
 	return func(ctx context.Context, req *http.Request, gqlInfo *clientv2.GQLRequestInfo, res interface{}, next clientv2.RequestInterceptorFunc) error {
-		req.Header.Set("ApiKey", apiKey)
+		if apiKey != "" {
+			req.Header.Set("ApiKey", apiKey)
+		}
 		return next(ctx, req, gqlInfo, res)
 	}
 }
