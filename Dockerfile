@@ -12,7 +12,7 @@ COPY ./graphql /stash/graphql/
 COPY ./ui /stash/ui/
 
 # Install pnpm and dependencies, generate GraphQL code, and build UI
-RUN npm install -g pnpm
+RUN npm install -g pnpm && pnpm config set use-node-version true
 RUN make pre-ui
 RUN make generate-ui
 
