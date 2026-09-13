@@ -11,8 +11,8 @@ COPY Makefile /stash/
 COPY ./graphql /stash/graphql/
 COPY ./ui /stash/ui/
 
-# Install pnpm and dependencies, generate GraphQL code, and build UI
-RUN npm install -g pnpm && pnpm config set use-node-version true
+# Install pnpm v10 (matching project's pnpm lockfile) and build UI
+RUN npm install -g pnpm@10
 RUN make pre-ui
 RUN make generate-ui
 
